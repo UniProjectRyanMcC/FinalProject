@@ -190,9 +190,7 @@
             this.rtbInstruct.Name = "rtbInstruct";
             this.rtbInstruct.Size = new System.Drawing.Size(296, 174);
             this.rtbInstruct.TabIndex = 9;
-            this.rtbInstruct.Text = "Roll the dice and this will determine the number of positions your avatar can adv" +
-    "ance.Ladders can give you major boosts but beware of snakes!\n\n\n For more info, s" +
-    "ee user manual.";
+            this.rtbInstruct.Text = resources.GetString("rtbInstruct.Text");
             // 
             // panelAvatar
             // 

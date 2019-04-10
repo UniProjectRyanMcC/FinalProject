@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Speech.Recognition;
+using System.Speech.Synthesis;
 
 
 namespace Snakes_and_Ladders
@@ -15,6 +16,7 @@ namespace Snakes_and_Ladders
     public partial class FormSnakesAndLadders : Form
     {
         //creating the speech engine
+        static SpeechSynthesizer speechSynth;
         static SpeechRecognitionEngine engine;
         //array to link square number to row+column
         int[,] mainArray = new int[10, 10];
@@ -150,12 +152,20 @@ namespace Snakes_and_Ladders
 
             engine = new SpeechRecognitionEngine();
             engine.SetInputToDefaultAudioDevice();
-            GrammarBuilder gb = new GrammarBuilder("Roll");
+            GrammarBuilder gb = new GrammarBuilder(new Choices(new String[] { "Roll", "Quit", "Restart", "Start", "Begin", "Standard", "Deluxe", "Harry", "Potter", "Bird", "Walrus", "Beaver", "Ladybug" }));
             Grammar gram = new Grammar(gb);
             engine.LoadGrammar(gram);
             engine.RecognizeAsync(RecognizeMode.Multiple);
             engine.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(engine_SpeechRecognized);
+
+            //creating the speech synthesiser 
+            speechSynth = new SpeechSynthesizer();
+            speechSynth.Volume = 100;
+            speechSynth.Rate = 2;
+
+            Boolean allowedToSpeak = true;
         }
+        //if the recognised speech matches the words required to perform a function, it will be performed
         void engine_SpeechRecognized(object ob, SpeechRecognizedEventArgs e)
         {
             string voiceRecog = Convert.ToString(e.Result.Text);
@@ -163,6 +173,66 @@ namespace Snakes_and_Ladders
             if(voiceRecog == "Roll" && btnRoll.Visible == true)
             {
                 btnRoll_Click_1(new object(), new EventArgs());
+            }
+
+            if (voiceRecog == "Quit" && llQuit.Visible == true)
+            {
+                LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llQuit.Links[0]);
+                llQuit_LinkClicked(new object(), ex);
+            }
+
+            if (voiceRecog == "Restart" && llRestart.Visible == true)
+            {
+                LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llRestart.Links[0]);
+                llRestart_LinkClicked(new object(), ex);
+            }
+
+            if (voiceRecog == "Start" && llStart.Visible == true)
+            {
+                LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llStart.Links[0]);
+                llStart_LinkClicked(new object(), ex);
+            }
+
+            if (voiceRecog == "Begin" && llBegin.Visible == true)
+            {
+                LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llBegin.Links[0]);
+                llBegin_LinkClicked(new object(), ex);
+            }
+
+            if (voiceRecog == "Standard" && rbSnL.Visible == true)
+            {
+                rbSnL.Checked = true;
+                rbSnL_CheckedChanged(new object(), new EventArgs());
+            }
+
+            if (voiceRecog == "Deluxe" && rbSnL2.Visible == true)
+            {
+                rbSnL2.Checked = true;
+                rbSnL2_CheckedChanged(new object(), new EventArgs());
+            }
+
+            if (voiceRecog == "Bird" && cbAvatarP1.Visible == true)
+            {
+                cbAvatarP1.SelectedIndex = 0;
+                speechSynth.Speak("Bird Selected");
+            }
+
+            if (voiceRecog == "Ladybug" && cbAvatarP1.Visible == true)
+            {
+                cbAvatarP1.SelectedIndex = 1;
+                speechSynth.Speak("Ladybug Selected");
+            }
+
+            if (voiceRecog == "Walrus" && cbAvatarP2.Visible == true)
+            {
+                cbAvatarP2.SelectedIndex = 0;
+                speechSynth.Speak("Walrus Selected");
+            }
+
+            if (voiceRecog == "Beaver" && cbAvatarP2.Visible == true)
+            {
+                cbAvatarP2.SelectedIndex = 1;
+                speechSynth.Speak("Beaver Selected");
             }
         }
 
@@ -303,21 +373,23 @@ namespace Snakes_and_Ladders
             rtbInstruct.Hide();
             panelAvatar.Show();
             panelTemplate.Show();
-            txtP1.Focus();
+            //some more instructions for the user
+            //setting textbox names to player 1 and 2
+            speechSynth.SpeakAsync("Game Begun. Select an avatar for each player.");
+            txtP1.ReadOnly = true;
+            txtP2.ReadOnly = true;
+            txtP1.Text = "Player One";
+            txtP2.Text = "Player Two";
             cbAvatarP1.Items.Add("Bird");
-            cbAvatarP2.Items.Add("Bird");
-            cbAvatarP1.Items.Add("Walrus");
-            cbAvatarP2.Items.Add("Walrus");
             cbAvatarP1.Items.Add("Ladybug");
-            cbAvatarP2.Items.Add("Ladybug");
-            cbAvatarP1.Items.Add("Beaver");
-            cbAvatarP2.Items.Add("Beaver");
-
         }
         //show the instructions on how to play game
         private void llInstructions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            //displaying and reading out the instructions to the user
+            string readOut = Convert.ToString(rtbInstruct.Text);
             rtbInstruct.Show();
+            speechSynth.Speak(readOut);
         }
         //wherever you change the text in a textbox or combo box, check if the "begin button" will appear
         private void txtP1_TextChanged(object sender, EventArgs e)
@@ -357,11 +429,8 @@ namespace Snakes_and_Ladders
                 txtP2.Enabled = true;
                 txtP2.Text = "";
                 cbAvatarP2.Items.Clear();
-                cbAvatarP2.Items.Add("Bird");
                 cbAvatarP2.Items.Add("Walrus");
-                cbAvatarP2.Items.Add("Ladybug");
                 cbAvatarP2.Items.Add("Beaver");
-                
             }
         }
         //depending on template, change the background image and values associated with the hotspotArrays
@@ -370,6 +439,8 @@ namespace Snakes_and_Ladders
         {
             if (rbSnL.Checked == true)
             {
+                speechSynth.SpeakAsyncCancelAll();
+                speechSynth.SpeakAsync("Standard Snakes and Ladders selected");
                 gBack.Clear(Color.Transparent);
                 fillObjects();
                 drawObjects();
@@ -392,6 +463,8 @@ namespace Snakes_and_Ladders
         {
             if (rbSnL2.Checked == true)
             {
+                speechSynth.SpeakAsyncCancelAll();
+                speechSynth.SpeakAsync("Deluxe Snakes and Ladders selected");
                 gBack.Clear(Color.Transparent);
                 fillObjects();
                 drawObjects();
@@ -412,6 +485,8 @@ namespace Snakes_and_Ladders
         {
             if (rbSnL3.Checked == true)
             {
+                speechSynth.SpeakAsyncCancelAll();
+                speechSynth.SpeakAsync("Harry Potter mode selected");
                 gBack.Clear(Color.Transparent);
                 fillObjects();
                 drawObjects();
@@ -499,12 +574,13 @@ namespace Snakes_and_Ladders
             llBegin.Hide();
             panelMain.Show();
             lblInstruction.Show();
+            speechSynth.Speak("You can now roll the dice.");
             btnRoll.Show();
             btnRoll.Focus();
-            if (avatarFlagP1 == 1 || avatarFlagP1 == 3)
-            {
-                btnSpecial.Show();
-            }
+            //if (avatarFlagP1 == 1 || avatarFlagP1 == 3)
+            //{
+            //    btnSpecial.Show();
+            //}
 
             lblInstruction.Text = strP1 + ": Roll the dice!";
 
@@ -826,7 +902,7 @@ namespace Snakes_and_Ladders
         }
         int gcf(int rise, int run)
         {
-            //copied from internet, algorithm to find the gcf of the rise and run
+            //algorithm to find the gcf of the rise and run
             while (rise != 0 && run != 0)
             {
                 if (rise > run)
@@ -918,10 +994,11 @@ namespace Snakes_and_Ladders
         }
         void win()
         {
+            //VOICE RECOGNITION NEEDED FOR HERE
             //if someone wins, give message
             if (mainFlag == 1)
             {
-
+                speechSynth.Speak(Convert.ToString(strP1) + " wins. Want to play again? Yes or no.");
                 if (MessageBox.Show(strP1 + " wins! Play again?", "Victory!", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     Application.Exit();
@@ -930,6 +1007,7 @@ namespace Snakes_and_Ladders
             }
             else if (mainFlag == 2)
             {
+                speechSynth.Speak(Convert.ToString(strP2) + " wins. Want to play again? Yes or no.");
                 if (MessageBox.Show(strP2 + " wins! Play again?", "Victory!", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     Application.Exit();
@@ -983,17 +1061,24 @@ namespace Snakes_and_Ladders
             {
                 //stop the timer
                 timerRoll.Stop();
+                //telling the players what was rolled
+                speechSynth.Speak("A " + Convert.ToString(randNum) + " was rolled.");
                 //return the count to 0
                 iCount2 = 0;
                 //start the logic of moving the counter
                 if (mainFlag == 1)
                 {
                     calculateMove(ref iSumP1);
+                    //telling the user the new position
+                    speechSynth.SpeakAsyncCancelAll();
+                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP1));
                 }
                 else if (mainFlag == 2)
                 {
-
                     calculateMove(ref iSumP2);
+                    //telling the user the new position
+                    speechSynth.SpeakAsyncCancelAll();
+                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP2));
                 }
                 return;
             }
@@ -1010,18 +1095,15 @@ namespace Snakes_and_Ladders
             btnRoll.Enabled = true;
 
             //if beaver and rolls a 1 or 6, roll again
-            if (randNum == 6 && avatarFlagP1 == 2 || randNum == 1 && avatarFlagP1 == 2)
-            {
-                mainFlag = 2;
-            }
-            if (randNum == 6 && avatarFlagP2 == 2 || randNum == 1 && avatarFlagP2 == 2)
-            {
-                mainFlag = 1;
-            }
+            //if (randNum == 6 && avatarFlagP1 == 2 || randNum == 1 && avatarFlagP1 == 2)
+            //{
+            //    mainFlag = 2;
+            //}
+            //if (randNum == 6 && avatarFlagP2 == 2 || randNum == 1 && avatarFlagP2 == 2)
+            //{
+            //    mainFlag = 1;
+            //}
             
-
-            
-
             //show appropiate label for another roll
             if (mainFlag == 2)
             {
@@ -1037,7 +1119,7 @@ namespace Snakes_and_Ladders
                 {
                     if (avatarFlagP1 == 1 || avatarFlagP1 == 3)
                     {
-                        btnSpecial.Show();
+                        //btnSpecial.Show();
                     }
                 }
                 else
@@ -1104,9 +1186,11 @@ namespace Snakes_and_Ladders
         private void llRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             initialize();
+            speechSynth.Speak("The game has been reset");
         }
         private void llQuit_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            speechSynth.Speak("Closing application.");
             Application.Exit();
         }
         //---------------------------------------------------code ended-------------------------------------------
