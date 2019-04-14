@@ -152,8 +152,9 @@ namespace Snakes_and_Ladders
 
             engine = new SpeechRecognitionEngine();
             engine.SetInputToDefaultAudioDevice();
-            GrammarBuilder gb = new GrammarBuilder(new Choices(new String[] { "Roll", "Quit", "Restart", "Start", "Begin", "Standard", "Deluxe", "Harry", "Potter", "Bird", "Walrus", "Beaver", "Ladybug" }));
-            Grammar gram = new Grammar(gb);
+            Grammar gram = MyGrammar();
+            //GrammarBuilder gb = new GrammarBuilder(new Choices(new String[] { "Roll", "Quit", "Restart", "Start", "Begin", "Standard", "Deluxe", "Harry", "Potter", "Bird", "Walrus", "Beaver", "Ladybug", "Game" }));
+            //Grammar gram = new Grammar(gb);
             engine.LoadGrammar(gram);
             engine.RecognizeAsync(RecognizeMode.Multiple);
             engine.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(engine_SpeechRecognized);
@@ -165,6 +166,20 @@ namespace Snakes_and_Ladders
 
             Boolean allowedToSpeak = true;
         }
+
+        static Grammar MyGrammar()
+        {
+            String[] single = new string[] { "Roll", "Start", "Begin", "Standard", "Deluxe", "Potter", "Bird", "Walrus", "Beaver", "Ladybug", "Game" };
+            String[] appDouble = new string[] { "Quit", "Harry", "Restart" };
+
+            GrammarBuilder gb = new GrammarBuilder(new Choices(appDouble));
+            GrammarBuilder solo = new GrammarBuilder(new Choices(single));
+
+            gb.Append(new Choices(solo));
+            Grammar gram = new Grammar(new Choices(gb, solo));
+            return gram;
+        }
+
         //if the recognised speech matches the words required to perform a function, it will be performed
         void engine_SpeechRecognized(object ob, SpeechRecognizedEventArgs e)
         {
@@ -175,13 +190,13 @@ namespace Snakes_and_Ladders
                 btnRoll_Click_1(new object(), new EventArgs());
             }
 
-            if (voiceRecog == "Quit" && llQuit.Visible == true)
+            if (voiceRecog == "Quit Game" && llQuit.Visible == true)
             {
                 LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llQuit.Links[0]);
                 llQuit_LinkClicked(new object(), ex);
             }
 
-            if (voiceRecog == "Restart" && llRestart.Visible == true)
+            if (voiceRecog == "Restart Game" && llRestart.Visible == true)
             {
                 LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llRestart.Links[0]);
                 llRestart_LinkClicked(new object(), ex);
@@ -209,6 +224,12 @@ namespace Snakes_and_Ladders
             {
                 rbSnL2.Checked = true;
                 rbSnL2_CheckedChanged(new object(), new EventArgs());
+            }
+
+            if (voiceRecog == "Harry Potter" && rbSnL3.Visible == true)
+            {
+                rbSnL3.Checked = true;
+                rbSnL3_CheckedChanged(new object(), new EventArgs());
             }
 
             if (voiceRecog == "Bird" && cbAvatarP1.Visible == true)
@@ -760,11 +781,32 @@ namespace Snakes_and_Ladders
                     iSum = hotspotEndArray[i];
                     if (mainFlag == 1)
                     {
+                        //moving the game piece up or down depending on snake or ladder
+                        int upDown1 = iSumP1;
                         iSumP1 = hotspotEndArray[i];
+                        
+                        if (upDown1 < iSumP1)
+                        {
+                            speechSynth.SpeakAsync("Ladder. " + Convert.ToString(iSumP1));
+                        }
+                        else
+                        {
+                            speechSynth.SpeakAsync("Snake. " + Convert.ToString(iSumP1));
+                        }
                     }
                     else
                     {
+                        int upDown2 = iSumP2;
                         iSumP2 = hotspotEndArray[i];
+
+                        if (upDown2 < iSumP2)
+                        {
+                            speechSynth.SpeakAsync("Ladder. " + Convert.ToString(iSumP2));
+                        }
+                        else
+                        {
+                            speechSynth.SpeakAsync("Snake. " + Convert.ToString(iSumP2));
+                        }
                     }
                     timerMoveCounter.Stop();
                     SnakesandLaddersAnimation(iPrevSum, iSum);
