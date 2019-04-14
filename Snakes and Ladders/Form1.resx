@@ -671,10 +671,10 @@
     <value>367, 21</value>
   </metadata>
   <data name="rtbInstruct.Text" xml:space="preserve">
-    <value>Roll the dice and this will determine the number of positions your avatar can advance. Ladders can give you major boosts but beware of snakes!
-
-
- To roll the dice say 'roll'. To quit say 'quit'. To restart say 'restart'.</value>
+    <value>To roll the dice say roll. To quit the game say quit game. To restart the game say restart game. Avatars can be chosen by their name, the names are beaver, walrus, ladybug and bird.
+Bird and Ladybug can be picked for player one. To pick a computer or player as player two. Say computer or player. Deluxe, standard and Harry Potter will pick the map. 
+The game tells you your roll, position and place on the board. As well as who wins. 
+Good luck</value>
   </data>
   <metadata name="timerUpLadderDownSnake.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>502, 21</value>

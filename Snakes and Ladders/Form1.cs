@@ -163,13 +163,11 @@ namespace Snakes_and_Ladders
             speechSynth = new SpeechSynthesizer();
             speechSynth.Volume = 100;
             speechSynth.Rate = 2;
-
-            Boolean allowedToSpeak = true;
         }
 
         static Grammar MyGrammar()
         {
-            String[] single = new string[] { "Roll", "Start", "Begin", "Standard", "Deluxe", "Potter", "Bird", "Walrus", "Beaver", "Ladybug", "Game" };
+            String[] single = new string[] { "Instructions", "Computer", "Player", "Roll", "Start", "Begin", "Standard", "Deluxe", "Potter", "Bird", "Walrus", "Beaver", "Ladybug", "Game" };
             String[] appDouble = new string[] { "Quit", "Harry", "Restart" };
 
             GrammarBuilder gb = new GrammarBuilder(new Choices(appDouble));
@@ -185,7 +183,25 @@ namespace Snakes_and_Ladders
         {
             string voiceRecog = Convert.ToString(e.Result.Text);
             
-            if(voiceRecog == "Roll" && btnRoll.Visible == true)
+            if (voiceRecog == "Instructions" && llInstructions.Visible == true)
+            {
+                LinkLabelLinkClickedEventArgs ex = new LinkLabelLinkClickedEventArgs(llInstructions.Links[0]);
+                llInstructions_LinkClicked(new object(), ex);
+            }
+
+            if (voiceRecog == "Computer" && rbComputer.Visible == true)
+            {
+                rbComputer.Checked= true;
+                rbComputer_CheckedChanged(new object(), new EventArgs());
+            }
+
+            if (voiceRecog == "Player" && rbPlayer.Visible == true)
+            {
+                rbPlayer.Checked = true;
+                rbPlayer_CheckedChanged(new object(), new EventArgs());
+            }
+
+            if (voiceRecog == "Roll" && btnRoll.Visible == true)
             {
                 btnRoll_Click_1(new object(), new EventArgs());
             }
@@ -298,8 +314,6 @@ namespace Snakes_and_Ladders
             drawNumbers();
             pbDisplay.Invalidate();
             pbLogos.BackgroundImage = Image.FromFile("Snakes and Ladders Logo.JPG");
-
-
         }
         void setArray(int template)
         {
@@ -403,6 +417,8 @@ namespace Snakes_and_Ladders
             txtP2.Text = "Player Two";
             cbAvatarP1.Items.Add("Bird");
             cbAvatarP1.Items.Add("Ladybug");
+            cbAvatarP2.Items.Add("Walrus");
+            cbAvatarP2.Items.Add("Beaver");
         }
         //show the instructions on how to play game
         private void llInstructions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -437,9 +453,6 @@ namespace Snakes_and_Ladders
                 iFlagCPU = 1;
                 txtP2.Text = "Computer";
                 txtP2.Enabled = false;
-                cbAvatarP2.Items.Clear();
-                cbAvatarP2.Items.Add("Walrus");
-                cbAvatarP2.Items.Add("Beaver");
             }
         }
         private void rbPlayer_CheckedChanged(object sender, EventArgs e)
@@ -447,11 +460,6 @@ namespace Snakes_and_Ladders
             if (rbPlayer.Checked == true)
             {
                 iFlagCPU = 0;
-                txtP2.Enabled = true;
-                txtP2.Text = "";
-                cbAvatarP2.Items.Clear();
-                cbAvatarP2.Items.Add("Walrus");
-                cbAvatarP2.Items.Add("Beaver");
             }
         }
         //depending on template, change the background image and values associated with the hotspotArrays
@@ -788,24 +796,57 @@ namespace Snakes_and_Ladders
                         if (upDown1 < iSumP1)
                         {
                             speechSynth.SpeakAsync("Ladder. " + Convert.ToString(iSumP1));
+                            if (iSumP1 >= iSumP2)
+                            {
+                                speechSynth.SpeakAsync("First");
+                            }
+                            else
+                            {
+                                speechSynth.SpeakAsync("Second");
+                            }
                         }
                         else
                         {
                             speechSynth.SpeakAsync("Snake. " + Convert.ToString(iSumP1));
+                            if (iSumP1 >= iSumP2)
+                            {
+                                speechSynth.SpeakAsync("First");
+                            }
+                            else
+                            {
+                                speechSynth.SpeakAsync("Second");
+                            }
                         }
                     }
                     else
                     {
+                        //moving the game piece up or down depending on snake or ladder
                         int upDown2 = iSumP2;
                         iSumP2 = hotspotEndArray[i];
 
                         if (upDown2 < iSumP2)
                         {
                             speechSynth.SpeakAsync("Ladder. " + Convert.ToString(iSumP2));
+                            if (iSumP2 >= iSumP1)
+                            {
+                                speechSynth.SpeakAsync("First");
+                            }
+                            else
+                            {
+                                speechSynth.SpeakAsync("Second");
+                            }
                         }
                         else
                         {
                             speechSynth.SpeakAsync("Snake. " + Convert.ToString(iSumP2));
+                            if (iSumP2 >= iSumP1)
+                            {
+                                speechSynth.SpeakAsync("First");
+                            }
+                            else
+                            {
+                                speechSynth.SpeakAsync("Second");
+                            }
                         }
                     }
                     timerMoveCounter.Stop();
@@ -1110,17 +1151,39 @@ namespace Snakes_and_Ladders
                 //start the logic of moving the counter
                 if (mainFlag == 1)
                 {
+                    string position = "";
                     calculateMove(ref iSumP1);
                     //telling the user the new position
                     speechSynth.SpeakAsyncCancelAll();
-                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP1));
+
+                    if (iSumP1 >= iSumP2)
+                    {
+                        position = "First";
+                    }
+                    else
+                    {
+                        position = "Second";
+                    }
+
+                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP1) + " " + position);
                 }
                 else if (mainFlag == 2)
                 {
+                    string position2 = "";
                     calculateMove(ref iSumP2);
                     //telling the user the new position
                     speechSynth.SpeakAsyncCancelAll();
-                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP2));
+
+                    if (iSumP2 >= iSumP1)
+                    {
+                        position2 = "First";
+                    }
+                    else
+                    {
+                        position2 = "Second";
+                    }
+
+                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP2) + " " + position2);
                 }
                 return;
             }
