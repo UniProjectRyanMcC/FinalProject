@@ -15,6 +15,7 @@ namespace Snakes_and_Ladders
     //---------------------------------------------------code courtesy of ccqi, reference at bottom-------------------------------------
     public partial class FormSnakesAndLadders : Form
     {
+        //CallingDB callDB = new CallingDB();
         //creating the speech engine
         static SpeechSynthesizer speechSynth;
         static SpeechRecognitionEngine engine;
@@ -110,6 +111,7 @@ namespace Snakes_and_Ladders
 
         public FormSnakesAndLadders()
         {
+            //callDB.loadWords();
             InitializeComponent();
             //hide or show appropiate buttons, labels, radio button, panel, picturebox, ect
             lblInstruction.Hide();
@@ -452,6 +454,8 @@ namespace Snakes_and_Ladders
             {
                 iFlagCPU = 1;
                 txtP2.Text = "Computer";
+                speechSynth.SpeakAsyncCancelAll();
+                speechSynth.SpeakAsync("Bot Selected");
                 txtP2.Enabled = false;
             }
         }
@@ -908,16 +912,18 @@ namespace Snakes_and_Ladders
             }
             if (iOriginalSum > 100)
             {
-                if (avatarFlagP1 == 4 && mainFlag == 1 || avatarFlagP2 == 4 && mainFlag == 2)
-                {
-                    timerMoveCounter.Stop();
-                    timerComputer.Stop();
-                    win();
-                    return;
-                }
+                //if (avatarFlagP1 == 4 && mainFlag == 1 || avatarFlagP2 == 4 && mainFlag == 2)
+                //{
+                    //timerMoveCounter.Stop();
+                    //timerComputer.Stop();
+                    //win();
+                    //return;
+                //}
+                
                 iFlagRollover = 1;
                 iSum = 200 - iSum;
                 iOriginalSum = 200 - iOriginalSum;
+
             }
 
 
@@ -1165,7 +1171,10 @@ namespace Snakes_and_Ladders
                         position = "Second";
                     }
 
-                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP1) + " " + position);
+                    if (iSumP1 <= 100)
+                    {
+                        speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP1) + " " + position);
+                    }
                 }
                 else if (mainFlag == 2)
                 {
@@ -1183,7 +1192,10 @@ namespace Snakes_and_Ladders
                         position2 = "Second";
                     }
 
-                    speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP2) + " " + position2);
+                    if (iSumP2 <= 100)
+                    {
+                        speechSynth.SpeakAsync("Position " + Convert.ToString(iSumP2) + " " + position2);
+                    }
                 }
                 return;
             }

@@ -84,3 +84,13 @@ C:\Users\Ryan\Documents\Snakes-And-Ladders-master\Snakes and Ladders\Snakes and 
 C:\Users\Ryan\Documents\Snakes-And-Ladders-master\Snakes and Ladders\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.csproj.CoreCompileInputs.cache
 C:\Users\Ryan\Documents\Snakes-And-Ladders-master\Snakes and Ladders\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.exe
 C:\Users\Ryan\Documents\Snakes-And-Ladders-master\Snakes and Ladders\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.pdb
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.csprojAssemblyReference.cache
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes_and_Ladders.FormSnakesAndLadders.resources
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes_and_Ladders.popUp.resources
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes_and_Ladders.Properties.Resources.resources
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.csproj.GenerateResource.cache
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.csproj.CoreCompileInputs.cache
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.exe
+C:\Users\Ryan\Source\Repos\FinalProject\Snakes and Ladders\obj\x86\Debug\Snakes and Ladders.pdb
+C:\Users\Ryan\source\repos\FinalProject\Snakes and Ladders\bin\Debug\Snakes and Ladders.exe
+C:\Users\Ryan\source\repos\FinalProject\Snakes and Ladders\bin\Debug\Snakes and Ladders.pdb
